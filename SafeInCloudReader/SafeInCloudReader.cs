@@ -29,7 +29,7 @@ namespace SafeInCloudReader
             public byte[] Secrets;
         }
 
-        public static Stream Read(Stream inputStream, string password)
+        public static Stream Read(Stream inputStream, byte[] password)
         {
             if (inputStream == null)
             {
@@ -76,14 +76,13 @@ namespace SafeInCloudReader
             return header;
         }
 
-        private static (byte[] Key, byte[] Iv) GetSecrets(Stream inputStream, string password)
+        private static (byte[] Key, byte[] Iv) GetSecrets(Stream inputStream, byte[] password)
         {
             using (var binaryReader = new BinaryReader(inputStream, Encoding.ASCII, leaveOpen: true))
             {
                 Header header = ReadHeader(binaryReader);
 
-                byte[] passwordBytes = password.Select(x => (byte)x).ToArray();
-                byte[] key = GetKey(passwordBytes, header.Salt, 10000);
+                byte[] key = GetKey(password, header.Salt, 10000);
 
                 using (var algorithm = GetAlgorithm(key, header.Iv))
                 using (var decryptor = algorithm.CreateDecryptor())
