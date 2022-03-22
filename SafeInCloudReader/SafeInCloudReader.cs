@@ -116,15 +116,14 @@ namespace SafeInCloudReader
 
         private static SymmetricAlgorithm GetAlgorithm(byte[] key, byte[] iv)
         {
-            return new AesManaged
-            {
-                KeySize = KEY_LENGTH,
-                BlockSize = 128,
-                Mode = CipherMode.CBC,
-                Padding = PaddingMode.None,
-                Key = key,
-                IV = iv,
-            };
+            var aes = Aes.Create("AesManaged");
+            aes.KeySize = KEY_LENGTH;
+            aes.BlockSize = 128;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.None;
+            aes.Key = key;
+            aes.IV = iv;
+            return aes;
         }
 
         private static byte[] GetKey(byte[] password, byte[] salt, int iterationCount)
